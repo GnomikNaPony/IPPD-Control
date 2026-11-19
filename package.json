@@ -16,6 +16,8 @@
     "cli": "tsx scripts/cli.ts",
     "e2e": "npm run build && node e2e/smoke.mjs && node e2e/theme.mjs",
     "dist": "npm run build && electron-builder --dir",
+    "predist:win": "node -e \"if (process.platform !== 'win32' || process.arch !== 'x64') { console.error('Сборка установщика требует Node.js x64 на Windows.'); process.exit(1) }\"",
+    "dist:win": "npm run build && electron-builder --win nsis --x64 --publish never",
     "schema": "tsx scripts/write-schema.ts",
     "demo:pdf": "electron scripts/make-umm-pdf.cjs"
   },
@@ -71,7 +73,13 @@
       "target": "dmg"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "artifactName": "IPPD-Control-Setup-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false
     },
     "linux": {
       "target": "AppImage"
